@@ -26,11 +26,10 @@ async def main() -> None:
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
     # Start the Bot
-    await application.initialize()
-    await application.start()
-    await application.updater.start_polling()
-    await application.updater.idle()
-    await application.stop()
+    async with application:
+        await application.start()
+        print("Bot is running... Press Ctrl+C to stop")
+        await application.updater.start_polling()
 
 if __name__ == '__main__':
     asyncio.run(main())
