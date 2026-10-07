@@ -1,4 +1,5 @@
 import logging
+import asyncio
 from telegram import Update
 from telegram.ext import Application, MessageHandler, filters, ContextTypes
 
@@ -16,7 +17,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     """Reply with 'a' to any message"""
     await update.message.reply_text("a")
 
-def main() -> None:
+async def main() -> None:
     """Start the bot"""
     # Create the Application
     application = Application.builder().token(TOKEN).build()
@@ -25,7 +26,11 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
     # Start the Bot
-    application.run_polling()
+    await application.initialize()
+    await application.start()
+    await application.updater.start_polling()
+    await application.updater.idle()
+    await application.stop()
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
